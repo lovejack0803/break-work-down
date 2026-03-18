@@ -11,6 +11,9 @@
   # 差分検出（latest.json と stdin の新データを比較）
   echo '{"sources":["slack"],...}' | python scripts/save_collection_data.py diff
 
+  # 初期状態にリセット（config.jsonを初期化し、収集データを全削除）
+  python scripts/save_collection_data.py reset
+
 出力: JSON（stdout）
 """
 
@@ -186,6 +189,43 @@ def detect_task_changes(old_data, new_data):
     return changes
 
 
+# --- リセット ---
+
+INITIAL_CONFIG = {
+    "_comment": "スキル実行時の永続設定。初回実行時にAskUserQuestionで取得し、以降は再利用する。手動編集も可。",
+    "slack_priority_channels": [],
+    "constraints": [],
+    "browser": "auto",
+    "output_dir": "",
+}
+
+
+def reset():
+    """data/ を初期状態に戻す（config.jsonを初期化、それ以外を削除）"""
+    data_dir = get_data_dir()
+    deleted = []
+
+    for f in data_dir.iterdir():
+        if f.name == "config.json":
+            continue
+        if f.is_file():
+            f.unlink()
+            deleted.append(f.name)
+
+    # config.json を初期状態に書き戻す
+    config_path = data_dir / "config.json"
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(INITIAL_CONFIG, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+    result = {
+        "status": "reset",
+        "deleted_files": deleted,
+        "config": "初期化済み",
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
 # --- メイン ---
 
 def main():
@@ -196,11 +236,15 @@ def main():
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
     parser = argparse.ArgumentParser(description="収集データの保存・読み込み・差分検出")
-    parser.add_argument("command", choices=["save", "load", "diff"], help="実行するコマンド")
+    parser.add_argument("command", choices=["save", "load", "diff", "reset"], help="実行するコマンド")
     args = parser.parse_args()
 
     if args.command == "load":
         load()
+        return
+
+    if args.command == "reset":
+        reset()
         return
 
     # save / diff はstdinからJSONを受け取る
