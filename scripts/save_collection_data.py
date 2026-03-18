@@ -189,6 +189,12 @@ def detect_task_changes(old_data, new_data):
 # --- メイン ---
 
 def main():
+    # Windows (cp932) で stdout/stderr が UnicodeEncodeError になるのを防ぐ
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(description="収集データの保存・読み込み・差分検出")
     parser.add_argument("command", choices=["save", "load", "diff"], help="実行するコマンド")
     args = parser.parse_args()

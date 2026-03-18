@@ -23,7 +23,6 @@ import argparse
 import json
 import os
 import platform
-import shutil
 import sqlite3
 import sys
 import tempfile
@@ -72,15 +71,31 @@ def select_browser(available, preference):
 
 def query_history(db_path, days, limit):
     """履歴DBをコピーしてクエリ実行。結果をリストで返す"""
-    # ブラウザ起動中はDBがロックされるため、一時ファイルにコピー
+    # ブラウザ起動中はDBがロックされるため、SQLite backup API で一貫したスナップショットを作成
+    # shutil.copy2 は WAL/journal 状態によって不整合が起きる可能性があるため使用しない
     tmp_fd, tmp_path = tempfile.mkstemp(suffix=".db")
     os.close(tmp_fd)
 
     try:
-        shutil.copy2(str(db_path), tmp_path)
-    except (PermissionError, OSError) as e:
+        src_conn = sqlite3.connect(f"file:{db_path}?mode=ro&immutable=1", uri=True)
+        dst_conn = sqlite3.connect(tmp_path)
+        src_conn.backup(dst_conn)
+        src_conn.close()
+        dst_conn.close()
+    except sqlite3.OperationalError as e:
+        # immutable モードが効かない場合は通常接続でリトライ
+        try:
+            src_conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+            dst_conn = sqlite3.connect(tmp_path)
+            src_conn.backup(dst_conn)
+            src_conn.close()
+            dst_conn.close()
+        except (sqlite3.OperationalError, OSError) as e2:
+            os.unlink(tmp_path)
+            raise RuntimeError(f"履歴DBの読み取りに失敗しました: {e2}")
+    except OSError as e:
         os.unlink(tmp_path)
-        raise RuntimeError(f"履歴DBのコピーに失敗しました（ブラウザが起動中の可能性があります）: {e}")
+        raise RuntimeError(f"履歴DBのアクセスに失敗しました: {e}")
 
     try:
         conn = sqlite3.connect(tmp_path)
@@ -169,6 +184,10 @@ def categorize_domain(domain, url=""):
     """ドメインからカテゴリを推定"""
     domain_lower = domain.lower()
 
+    # Chrome拡張ID除外（32文字の英小文字のみで構成されるドメイン）
+    if len(domain_lower) == 32 and domain_lower.isalpha() and domain_lower.islower():
+        return None  # Chrome拡張IDを除外
+
     # プライベート除外
     for private in PRIVATE_DOMAINS:
         if private in domain_lower:
@@ -239,6 +258,12 @@ def group_by_domain(rows):
 # --- メイン ---
 
 def main():
+    # Windows (cp932) で stdout/stderr が UnicodeEncodeError になるのを防ぐ
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(description="ブラウザ履歴を収集しJSON出力")
     parser.add_argument("--days", type=int, default=14, help="直近何日間を対象にするか（デフォルト: 14）")
     parser.add_argument("--limit", type=int, default=50, help="取得する上位件数（デフォルト: 50）")
