@@ -193,9 +193,9 @@ def detect_task_changes(old_data, new_data):
 
 INITIAL_CONFIG = {
     "_comment": "スキル実行時の永続設定。初回実行時にAskUserQuestionで取得し、以降は再利用する。手動編集も可。",
-    "slack_priority_channels": [],
+    "messaging_priority_channels": [],
     "constraints": [],
-    "browser": "auto",
+    "browser": "",
     "output_dir": "",
 }
 

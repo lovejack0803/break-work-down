@@ -136,6 +136,7 @@ DOMAIN_CATEGORIES = {
     "clickup.com": "プロジェクト管理",
     # コミュニケーション
     "slack.com": "コミュニケーション",
+    "web.telegram.org": "コミュニケーション",
     "teams.microsoft.com": "コミュニケーション",
     "discord.com": "コミュニケーション",
     "zoom.us": "コミュニケーション",
