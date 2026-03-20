@@ -1,0 +1,21 @@
+{
+  "name": "break-work-down",
+  "owner": {
+    "name": "JACK",
+    "email": "yuta.shimizu@wilby.co.jp"
+  },
+  "metadata": {
+    "description": "現場の業務を分析し、効率化・自動化の改善を提案する plugin。Slack・ブラウザ履歴・Google Workspace 等と連携し、業務データを収集してタスクレベルの具体的な提案を行います。",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "break-work-down",
+      "source": "./plugins/break-work-down",
+      "description": "業務分析・改善提案スキル。現場の業務内容をタスクレベルまで把握し、具体的な効率化・自動化の手段を提案します。",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["business-analysis", "automation", "workflow", "efficiency"]
+    }
+  ]
+}

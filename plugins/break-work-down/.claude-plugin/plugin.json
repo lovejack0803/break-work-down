@@ -1,0 +1,11 @@
+{
+  "name": "break-work-down",
+  "description": "現場の業務を分析し、効率化・自動化の改善を提案する plugin。Slack・ブラウザ履歴・Google Workspace 等と連携してデータを収集し、タスクレベルの具体的な提案を行います。",
+  "version": "1.0.0",
+  "author": {
+    "name": "JACK"
+  },
+  "homepage": "https://github.com/lovejack0803/break-work-down",
+  "license": "MIT",
+  "keywords": ["business-analysis", "automation", "workflow", "efficiency", "hackathon"]
+}
