@@ -3,5 +3,10 @@
   "messaging_priority_channels": [],
   "constraints": [],
   "browser": "",
-  "output_dir": ""
+  "browser_use": {
+    "enabled": false,
+    "allowed_domains": [],
+    "denied_domains": [],
+    "login_method": "user_manual"
+  }
 }
