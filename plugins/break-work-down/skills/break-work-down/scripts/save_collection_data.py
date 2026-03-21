@@ -21,8 +21,6 @@ CONFIG_PATH = DATA_DIR / "config.json"
 
 DEFAULT_CONFIG = {
     "_comment": "スキル実行時の永続設定。初回実行時にAskUserQuestionで取得し、以降は再利用する。手動編集も可。",
-    "messaging_priority_channels": [],
-    "constraints": [],
     "browser": "",
     "browser_use": {
         "enabled": False,
