@@ -262,15 +262,24 @@ Step 4-5の結果を改善インパクト順に並べ、上位に集中して提
 | **HTML（デフォルト）** | 常に利用可 | Write ツールで出力 → HTTPサーバーで表示 |
 | **Google Docs** | Google Workspace MCPが接続済みの場合 | `docs_create` + `docs_appendText` でドキュメント作成。組織内共有・コメント・稟議に便利 |
 
-HTMLレポート生成後、Bash ツール（`run_in_background: true`）で `data/` ディレクトリにHTTPサーバーを起動し、URLをユーザーに提示する。**コマンド末尾に `&` を付けないこと**（`run_in_background: true` と併用すると、bash が即座に終了しサーバーも停止する）:
+HTMLレポート生成後、Bash ツール（`run_in_background: true`）で `data/` ディレクトリにHTTPサーバーを起動し、URLをユーザーに提示する。**コマンド末尾に `&` を付けないこと**（`run_in_background: true` と併用すると、bash が即座に終了しサーバーも停止する）。
+
+**重要: bashの `cd` は使わない。** Windows環境では、bashがスキルのパス（特にプラグインキャッシュパス）を正しく解決できず、プロジェクト側の同名ディレクトリに移動してしまうことがある。代わりに Python の `os.chdir()` でディレクトリを変更する:
 
 ```bash
-cd "<skill-base-dir>/data" && python -m http.server 8080
+python -c "
+import http.server, socketserver, os
+os.chdir(r'<skill-base-dir>/data')
+print('Serving from:', os.getcwd())
+handler = http.server.SimpleHTTPRequestHandler
+httpd = socketserver.TCPServer(('', 8080), handler)
+httpd.serve_forever()
+"
 ```
 
 提示するURL: `http://localhost:8080/report_YYYY-MM-DD.html`
 
-ポート8080が使用中の場合は8081, 8082と順に試す。
+ポート8080が使用中の場合は8081, 8082と順に試す。サーバー起動後は `curl -s http://localhost:8080/ | grep report` でレポートが一覧に含まれることを必ず確認する。含まれない場合はサーバーのディレクトリが誤っている。
 
 Google Workspace MCPが利用可能で、ユーザーが組織内共有を希望する場合は、HTMLレポートに加えてGoogle Docsにも出力する（両方生成してよい）。Google Docsへの出力時は、HTMLのデザイン要素は省略し、テキスト+テーブルのシンプルな構成にする。
 
