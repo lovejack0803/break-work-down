@@ -8,5 +8,8 @@
     "allowed_domains": [],
     "denied_domains": [],
     "login_method": "user_manual"
-  }
+  },
+  "analysis_scope": "",
+  "budget_constraint": "",
+  "organization_type": ""
 }

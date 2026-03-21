@@ -19,16 +19,25 @@ data/
 {
   "collected_at": "2026-03-16T10:30:00+09:00",
   "sources": ["slack", "browser_chrome", "browser_use_kintone"],
+  "analysis_scope": "individual",
+  "budget_constraint": "zero",
+  "organization_type": "npo",
   "user_profile": { "name": "...", "title": "...", "department": "...", "email": "..." },
   "estimated_tasks": [
-    { "name": "受注処理・顧客対応", "frequency": "毎日", "source": "Slack報告、CRM履歴", "details": "..." }
+    { "name": "受注処理・顧客対応", "frequency": "毎日", "peak_period": "", "source": "Slack報告、CRM履歴", "details": "..." }
   ],
   "tool_environment": [
     { "name": "Salesforce", "category": "CRM", "source": "browser_chrome" }
   ]
 }
+// analysis_scope: "individual" | "team" | "project"
+// budget_constraint: "zero" | "low" | "high" | "undecided"
+// organization_type: "" | "npo" | "public" | "enterprise" | "startup" | "freelance"
+// peak_period: 年度末・月末等のピーク時期（空なら通年定常）
 // その他のフィールドは収集状況に応じて自由に追加する
 ```
+
+収集データがゼロ（MCP接続なし、ブラウザ履歴に業務関連なし）の場合でも、config.jsonとlatest.jsonは作成する。estimated_tasksをヒアリング結果から構築し、sourceを `"hearing"` として記録する。
 
 ## 保存・読み込み・差分検出（スクリプト実行）
 
