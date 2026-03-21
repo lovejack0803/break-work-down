@@ -47,26 +47,42 @@ Read ツールで `data/config.json` を読み込む。
 
 利用可能なMCPサーバーとローカルのブラウザ履歴を確認する。
 
-### 1b. AskUserQuestion で許可 + 制約条件を取得
+### 1b. MCP連携の推奨と許可取得
 
-`config.json` の未設定項目のみ聞く。1回の AskUserQuestion にまとめる。
+**MCP連携を積極的に推奨する。** 自動収集データがあるほどヒアリング負荷が下がり、提案の精度も上がるため。
+
+#### MCP未接続の場合の案内
+
+優先ツール（Slack, Notion, Google Workspace等）が未接続の場合、**AskUserQuestion** で以下を聞く:
+
+- 日常的に使っている業務ツールはどれか（Slack / Notion / Google Workspace / Telegram / Discord 等）
+- 接続を試すか、ヒアリングだけで進めるか
+
+**ユーザーがMCP接続を希望した場合**: 該当ツールの接続手順を案内する。
+- Slack: `claude plugin install slack` → OAuth認証
+- Notion: `claude plugin install notion` または `claude mcp add notion -- npx -y @notionhq/notion-mcp-server`
+- Google Workspace: `claude mcp add google-workspace -- npx -y @googleworkspace/cli mcp`
+- 接続後、ツールがセッションに反映されるまで再起動が必要な場合がある。接続完了後に Step 1a に戻って検出をやり直す
+
+**ユーザーがMCP接続を拒否/スキップした場合**: ブラウザ履歴のみ or ヒアリング中心モードに切り替える。
+
+#### 制約条件の取得
+
+`config.json` の未設定項目のみ聞く。MCP連携の質問と1回の AskUserQuestion にまとめてよい。
 
 聞く内容:
-- **情報ソース**: 検出済みMCPツール・未接続の優先ツール・ブラウザ履歴をフラットに提示し、ユーザーが選択
 - **分析対象の単位**（未設定なら）: 個人 / チーム・部門 / 特定プロジェクト
 - **予算の目安**（未設定なら）: 追加費用ゼロ / 月額数千円 / 月額万円以上 / 未定
-- **組織種別**（未設定なら）: NPO・非営利 / 公的機関 / 大企業 / スタートアップ / フリーランス / 該当なし — NPO向け無償プラン等の調査フィルタに使用
+- **組織種別**（未設定なら）: NPO・非営利 / 公的機関 / 大企業 / スタートアップ / フリーランス / 該当なし
 
 取得した設定を保存:
 ```bash
 echo '{"analysis_scope": "individual", "budget_constraint": "zero", "organization_type": "freelance", "browser": "chrome"}' | PYTHONUTF8=1 python "<skill-base-dir>/scripts/save_collection_data.py" save-config
 ```
 
-**許可が得られた範囲だけ**情報収集する。拒否/未許可がある場合は推定せず、ヒアリングで補う前提に切り替える。
-
 ### 1c. 収集エージェントの起動
 
-**収集対象がゼロの場合**: 収集エージェントをスキップし、Step 2 のヒアリング中心モードに直行する。
+**収集対象がゼロの場合（MCP未接続 + ブラウザ履歴も拒否）**: 収集エージェントをスキップし、Step 2 をヒアリング中心モードで起動する。
 
 **収集対象がある場合**: Agent ツールで収集エージェントを起動する。
 
@@ -87,14 +103,14 @@ Agent ツール起動:
 
 ## Step 2: 分析 + ヒアリング
 
-Agent ツールで分析エージェントを起動する。
+Agent ツールで分析エージェントを起動する。収集データが空の場合は `hearing_only: true` をプロンプトに含め、ヒアリング中心モードで起動する。
 
 ```
 Agent ツール起動:
   プロンプトに含める情報:
   - agents/analyze.md の絶対パスと「Read ツールで読んでから分析を始めること」
   - <skill-base-dir> の値
-  - 収集エージェントの結果JSON
+  - 収集エージェントの結果JSON（空の場合は `{}` + `hearing_only: true`）
   - config.json の内容
 ```
 
