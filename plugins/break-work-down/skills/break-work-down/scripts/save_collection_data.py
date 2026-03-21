@@ -30,6 +30,9 @@ DEFAULT_CONFIG = {
         "denied_domains": [],
         "login_method": "user_manual",
     },
+    "analysis_scope": "",
+    "budget_constraint": "",
+    "organization_type": "",
 }
 
 
