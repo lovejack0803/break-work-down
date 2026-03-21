@@ -53,6 +53,9 @@ PYTHONUTF8=1 python "<skill-base-dir>/scripts/save_collection_data.py" load
 # 差分検出（2回目以降、新データとlatest.jsonを比較）
 echo '<新しい収集データJSON>' | PYTHONUTF8=1 python "<skill-base-dir>/scripts/save_collection_data.py" diff
 
+# config.json の更新（既存設定とマージ。変更フィールドだけ渡せばよい）
+echo '{"analysis_scope": "individual", "budget_constraint": "zero"}' | PYTHONUTF8=1 python "<skill-base-dir>/scripts/save_collection_data.py" save-config
+
 # 初期状態にリセット（config.jsonを初期化し、collection_*.json / latest.json を全削除）
 PYTHONUTF8=1 python "<skill-base-dir>/scripts/save_collection_data.py" reset
 ```

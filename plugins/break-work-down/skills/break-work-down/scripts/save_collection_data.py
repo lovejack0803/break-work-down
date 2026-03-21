@@ -148,6 +148,35 @@ def _compute_diff(old: dict, new: dict) -> dict:
     return result
 
 
+def cmd_save_config():
+    """stdinからJSONを読み、config.json に保存する。既存の設定とマージする。"""
+    raw = sys.stdin.read().strip()
+    if not raw:
+        print("Error: no JSON data on stdin.", file=sys.stderr)
+        sys.exit(1)
+    try:
+        new_config = json.loads(raw)
+    except json.JSONDecodeError as e:
+        print(f"Error: invalid JSON — {e}", file=sys.stderr)
+        sys.exit(1)
+
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 既存configがあればマージ、なければDEFAULT_CONFIGベースで作成
+    if CONFIG_PATH.exists():
+        existing = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    else:
+        existing = dict(DEFAULT_CONFIG)
+
+    existing.update(new_config)
+    CONFIG_PATH.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(json.dumps({
+        "status": "config_saved",
+        "path": str(CONFIG_PATH),
+    }, ensure_ascii=False, indent=2))
+
+
 def cmd_reset():
     """config.json を初期化し、collection_*.json と latest.json を削除する。"""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -176,7 +205,7 @@ def main():
         description="収集データの保存・読み込み・差分検出・リセット"
     )
     parser.add_argument(
-        "command", choices=["save", "load", "diff", "reset"],
+        "command", choices=["save", "load", "diff", "reset", "save-config"],
         help="実行するコマンド"
     )
     args = parser.parse_args()
@@ -186,6 +215,7 @@ def main():
         "load": cmd_load,
         "diff": cmd_diff,
         "reset": cmd_reset,
+        "save-config": cmd_save_config,
     }
     commands[args.command]()
 
