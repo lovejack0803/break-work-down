@@ -6,16 +6,7 @@
 
 ## ブラウザの選択
 
-ブラウザ履歴を収集する前に、**必ず**どのブラウザの履歴を参照するかをユーザーに確認する。`config.json` の `browser` が設定済みでもスキップしない（前回と異なるブラウザを使い始めている場合があるため）。
-
-この質問は Step 1b の AskUserQuestion（許可取得）には含めず、**ブラウザ履歴の収集エージェントが収集開始前にテキストで直接聞く**。AskUserQuestion の質問数を増やさない。
-
-```
-普段お使いのブラウザはどちらですか？
-  Chrome / Edge / 両方 / 参照しない
-```
-
-ユーザーの回答を `config.json` の `browser` に保存する（`"chrome"` / `"edge"` / `"both"` / `"none"`）。
+ブラウザ種別（Chrome / Edge / 両方）は Step 1b で許可と合わせて確認する。`config.json` の `browser` に保存する値: `"chrome"` / `"edge"` / `"both"` / `"none"`。
 
 ## スクリプト実行
 
