@@ -2,7 +2,7 @@
   "name": "break-work-down",
   "owner": {
     "name": "JACK",
-    "email": "yuta.shimizu@wilby.co.jp"
+    "email": "bauschlomb2112@gmail.com"
   },
   "metadata": {
     "description": "現場の業務を分析し、効率化・自動化の改善を提案する plugin。Slack・ブラウザ履歴・Google Workspace 等と連携し、業務データを収集してタスクレベルの具体的な提案を行います。",
