@@ -126,7 +126,20 @@ PYTHONUTF8=1 python "<skill-base-dir>/scripts/collect_browser_history.py" --brow
 # 「both」の場合は2回実行して結果をマージ
 ```
 
+スクリプトは `{"browser": "...", "domains": [{"domain": "...", "category": "...", "visits": N}, ...]}` 形式で出力する。収集エージェントはこれを `tool_environment` 形式に変換する:
+
+```
+domains[].domain → tool_environment[].name
+domains[].category → tool_environment[].category
+"browser_chrome" or "browser_edge" → tool_environment[].source
+```
+
 Windows環境では `PYTHONUTF8=1` を必ず付ける。
+
+**実行失敗時の対応:**
+- ブラウザ未インストール / 履歴DBが見つからない → そのブラウザをスキップし、他のソースの収集は継続
+- DBロック（ブラウザ起動中等）→ スクリプトが読み取り専用コピーで対応するため通常は発生しない。失敗した場合はスキップ
+- `"both"` 指定で片方だけ失敗 → 成功した方のデータのみ使用
 
 #### Browser Use 収集（MCP非対応ツール向け）
 
@@ -201,9 +214,8 @@ echo '<収集データJSON>' | PYTHONUTF8=1 python "<skill-base-dir>/scripts/sav
 
 ## プライバシー・安全性
 
-- **ユーザーの生データ**（メッセージ本文・閲覧URL・個人情報・識別子）は保存しない。※ これは収集対象（Slack/ブラウザ等）から取得したユーザーの生データに対する制約であり、調査エージェントがWeb検索で見つけた参照URLとは別物
-- 出典は「ツール種別＋要約（カテゴリ、頻度、傾向）」で示す
-- 会社名・個人名・サービス固有名はレポートに含めない（収集段階から一般化する）
+- **ユーザーの生データ**（メッセージ本文・閲覧URL・個人情報・会社名・個人名・サービス固有名）は収集結果に含めない。出典は「ツール種別＋要約（カテゴリ、頻度、傾向）」で一般化して示す
+- ※ この制約は収集対象（Slack/ブラウザ等）から取得したユーザーの生データに対するもの。調査エージェントがWeb検索で見つけた公開URLとは別物
 - 法定守秘義務がある職種では自動収集をスキップし、その旨を結果に明記する
 
 ## 収集対象が多い環境
