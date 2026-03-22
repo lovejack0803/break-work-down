@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務改善レポート — 広告宣伝部</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== デザイントークン（必須） ===== */
+:root {
+  --charcoal: #2c2c34;
+  --charcoal-soft: #4a4a56;
+  --warm-bg: #fdf8f3;
+  --paper: #ffffff;
+  --peach: #e07a5f;
+  --peach-deep: #c4603f;
+  --sage: #6b8f71;
+  --sage-deep: #4d7053;
+  --plum: #8a6c8a;
+  --mist: #8a95a5;
+  --border: #e8e2da;
+  --shadow: rgba(44, 44, 52, 0.07);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  line-height: 1.9;
+  font-weight: 400;
+  color: var(--charcoal);
+  background: var(--warm-bg);
+  overflow-x: hidden;
+}
+.container { max-width: 880px; margin: 0 auto; padding: 0 28px; }
+
+/* ===== カバー ===== */
+.cover {
+  padding: 80px 40px 70px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #fdf8f3 0%, #fce8db 40%, #f5d5c3 100%);
+  animation: coverFade 0.8s ease-out;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(224, 122, 95, 0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--peach), var(--sage), var(--plum));
+}
+.cover-inner { max-width: 880px; margin: 0 auto; position: relative; z-index: 1; }
+.cover h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2.6em;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+  animation: fadeUp 0.6s ease-out 0.35s both;
+}
+.cover .meta {
+  margin-top: 32px;
+  font-size: 0.78em;
+  letter-spacing: 1px;
+  color: var(--mist);
+  animation: fadeUp 0.6s ease-out 0.65s both;
+}
+
+/* ===== セクション ===== */
+.section { margin: 56px 0; animation: fadeUp 0.5s ease-out both; }
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--charcoal);
+}
+.section-header .num {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2.2em;
+  font-weight: 900;
+  color: var(--peach);
+  line-height: 1;
+}
+.section-header h2 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ===== コンポーネント ===== */
+.card {
+  background: var(--paper);
+  border-radius: 2px;
+  padding: 26px 28px;
+  box-shadow: 0 1px 3px var(--shadow), 0 8px 24px rgba(44, 44, 52, 0.04);
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.card:hover {
+  box-shadow: 0 2px 8px var(--shadow), 0 16px 40px rgba(44, 44, 52, 0.08);
+  transform: translateY(-2px);
+}
+
+.step-card {
+  background: var(--paper);
+  padding: 22px 26px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.step-card:hover { transform: translateX(4px); box-shadow: -4px 0 12px rgba(44, 44, 52, 0.06); }
+.step-card:nth-child(1) { border-left: 4px solid var(--peach); }
+.step-card:nth-child(1) .step-num { color: var(--peach); }
+.step-card:nth-child(2) { border-left: 4px solid var(--sage); }
+.step-card:nth-child(2) .step-num { color: var(--sage); }
+.step-card:nth-child(3) { border-left: 4px solid var(--plum); }
+.step-card:nth-child(3) .step-num { color: var(--plum); }
+.step-num {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.8em;
+  font-weight: 900;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 44px;
+  text-align: center;
+}
+
+.elim-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  padding: 22px 26px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.elim-icon { font-size: 1.4em; flex-shrink: 0; width: 36px; text-align: center; line-height: 1; padding-top: 4px; }
+.elim-body h4 { font-size: 0.95em; font-weight: 700; margin-bottom: 6px; }
+.elim-body p { font-size: 0.88em; color: var(--charcoal-soft); margin-bottom: 4px; }
+.elim-tag {
+  display: inline-block;
+  font-size: 0.72em;
+  padding: 2px 10px;
+  border-radius: 2px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.elim-tag.zero { background: rgba(107, 143, 113, 0.12); color: var(--sage-deep); }
+.elim-tag.time { background: rgba(224, 122, 95, 0.12); color: var(--peach-deep); }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.kpi-card {
+  background: var(--paper);
+  padding: 22px 16px;
+  text-align: center;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.kpi-card:nth-child(1)::before { background: var(--peach); }
+.kpi-card:nth-child(2)::before { background: var(--sage); }
+.kpi-card:nth-child(3)::before { background: var(--plum); }
+.kpi-card:nth-child(4)::before { background: var(--mist); }
+.kpi-card .value {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.8em;
+  font-weight: 900;
+  color: var(--charcoal);
+}
+.kpi-card .label { font-size: 0.78em; color: var(--charcoal-soft); margin-top: 4px; }
+
+.highlight {
+  background: var(--paper);
+  border-left: 4px solid var(--peach);
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+.tip {
+  background: rgba(107, 143, 113, 0.06);
+  border-left: 4px solid var(--sage);
+  padding: 16px 22px;
+  margin: 16px 0;
+}
+
+.flow-box {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  padding: 24px 28px;
+  font-family: 'Zen Kaku Gothic New', monospace;
+  font-size: 0.88em;
+  line-height: 2;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+.flow-box .bottleneck {
+  background: rgba(224, 122, 95, 0.12);
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-weight: 700;
+  color: var(--peach-deep);
+}
+.flow-box .ok { color: var(--sage); font-weight: 500; }
+
+.next-action {
+  background: var(--charcoal);
+  color: #fff;
+  padding: 28px 32px;
+  position: relative;
+  margin-top: 24px;
+}
+.next-action::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--peach), var(--sage), var(--plum));
+}
+.next-action h3 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.05em;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.next-action ol { padding-left: 20px; }
+.next-action li { margin-bottom: 10px; font-size: 0.9em; line-height: 1.7; }
+.next-action li strong { color: var(--peach); }
+
+/* ===== テーブル ===== */
+table { width: 100%; border-collapse: collapse; font-size: 0.88em; table-layout: fixed; word-break: break-word; }
+th { background: var(--charcoal); color: #fff; padding: 12px 14px; text-align: left; font-weight: 500; }
+td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+tr:nth-child(even) { background: rgba(253, 248, 243, 0.6); }
+
+/* ===== フッター ===== */
+.footer {
+  background: var(--charcoal);
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+  padding: 22px;
+  margin-top: 60px;
+  font-size: 0.78em;
+  letter-spacing: 1.5px;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+/* ===== Before / After 2カラム縦フロー ===== */
+.ba-columns {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  margin: 32px 0;
+  align-items: start;
+}
+.ba-col { border-radius: 8px; padding: 0; overflow: hidden; }
+.ba-col-header {
+  padding: 14px 20px;
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 700;
+  font-size: 0.92em;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.ba-before-header { background: var(--charcoal); color: #fff; }
+.ba-after-header { background: var(--peach-deep); color: #fff; }
+.ba-steps { padding: 20px; }
+.ba-step {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  padding: 14px 18px;
+  position: relative;
+}
+.ba-step.bottleneck {
+  background: rgba(224, 122, 95, 0.08);
+  border-left: 4px solid var(--peach);
+}
+.ba-step.bottleneck .ba-step-title { color: var(--peach-deep); font-weight: 700; }
+.ba-step.automated {
+  background: rgba(224, 122, 95, 0.06);
+  border-left: 4px solid var(--peach);
+}
+.ba-step.unchanged {
+  background: rgba(138, 149, 165, 0.06);
+  border-left: 4px solid var(--border);
+  color: var(--charcoal-soft);
+}
+.ba-step-title { font-size: 0.82em; font-weight: 700; margin-bottom: 6px; }
+.ba-step-body { font-size: 0.88em; line-height: 1.7; }
+.ba-step-detail { font-size: 0.85em; color: var(--charcoal-soft); }
+.ba-step-saving { color: var(--peach-deep); font-weight: 700; }
+.bn-label { color: var(--peach); font-size: 0.9em; }
+.ba-step-arrow { text-align: center; color: var(--mist); font-size: 0.9em; padding: 4px 0; }
+.ba-badge {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-size: 0.7em;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-weight: 700;
+}
+.badge-warn { background: var(--peach); color: #fff; }
+.badge-tool { background: var(--charcoal); color: #fff; }
+.ba-col-summary {
+  margin: 0 20px 16px;
+  padding: 14px 18px;
+  text-align: center;
+  font-size: 0.88em;
+  font-weight: 700;
+  border-radius: 4px;
+}
+.ba-before-summary { background: rgba(224, 122, 95, 0.10); color: var(--peach-deep); }
+.ba-after-summary { background: rgba(224, 122, 95, 0.10); color: var(--peach-deep); }
+.ba-legend { padding: 0 20px 16px; font-size: 0.75em; color: var(--charcoal-soft); }
+.legend-dot { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: middle; }
+.bottleneck-dot { background: rgba(224, 122, 95, 0.3); border-left: 3px solid var(--peach); }
+.automated-dot { background: rgba(224, 122, 95, 0.3); border-left: 3px solid var(--peach); }
+.unchanged-dot { background: rgba(138, 149, 165, 0.15); border-left: 3px solid var(--border); }
+.ba-center-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6em;
+  color: var(--peach);
+  font-weight: 900;
+  padding-top: 200px;
+}
+.ba-center-label { font-size: 0.4em; letter-spacing: 2px; margin-top: 4px; }
+
+/* ===== 提案カード ===== */
+.proposal-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 26px 28px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 3px var(--shadow), 0 8px 24px rgba(44, 44, 52, 0.04);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.proposal-card:hover {
+  box-shadow: 0 2px 8px var(--shadow), 0 16px 40px rgba(44, 44, 52, 0.08);
+  transform: translateY(-2px);
+}
+.proposal-card h3 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1em;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.proposal-card .detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88em;
+  margin-bottom: 6px;
+}
+.proposal-card .detail-label { color: var(--charcoal-soft); }
+.proposal-card .detail-value { font-weight: 700; }
+.proposal-card .link-list { margin-top: 12px; }
+.proposal-card .link-list a {
+  display: block;
+  font-size: 0.82em;
+  color: var(--peach-deep);
+  text-decoration: none;
+  margin-bottom: 4px;
+}
+.proposal-card .link-list a:hover { text-decoration: underline; }
+
+/* ===== 注記 ===== */
+.note-box {
+  background: rgba(138, 149, 165, 0.08);
+  border-left: 4px solid var(--mist);
+  padding: 16px 22px;
+  margin: 20px 0;
+  font-size: 0.85em;
+  color: var(--charcoal-soft);
+}
+.note-box strong { color: var(--charcoal); }
+
+/* ===== ユーティリティ ===== */
+.sub-h { font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: 1em; margin: 24px 0 12px; }
+.small { font-size: 0.82em; color: var(--charcoal-soft); }
+.accent { color: var(--peach); font-weight: 700; }
+.sage-accent { color: var(--sage-deep); font-weight: 700; }
+strong { font-weight: 700; }
+
+/* ===== アニメーション ===== */
+@keyframes coverFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== レスポンシブ・印刷 ===== */
+@media print {
+  .card, .step-card { break-inside: avoid; }
+  .card:hover, .step-card:hover { transform: none; box-shadow: none; }
+  body { background: #fff; }
+}
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .cover h1 { font-size: 1.8em; }
+  .ba-columns { grid-template-columns: 1fr; }
+  .ba-center-arrow {
+    padding-top: 0;
+    flex-direction: row;
+    gap: 8px;
+    font-size: 1.2em;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== カバー ===== -->
+<div class="cover" style="padding: 50px 40px 44px;">
+  <div class="cover-inner">
+    <h1 style="font-size: 2.2em; margin-bottom: 18px;">業務改善レポート</h1>
+    <p class="meta" style="margin-top: 0;">広告宣伝部 — 2026年3月22日</p>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===== セクション1: 業務一覧と改善の方向性 ===== -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">01</span>
+    <h2>業務一覧と改善の方向性</h2>
+  </div>
+
+  <div class="card" style="padding: 0; overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 18%;">業務名</th>
+          <th style="width: 30%;">工程概要</th>
+          <th style="width: 8%;">分類</th>
+          <th style="width: 12%;">頻度</th>
+          <th style="width: 12%;">推定時間/回</th>
+          <th style="width: 10%;">改善方向</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>週次広告レポート作成</strong></td>
+          <td>GA・各広告管理画面からデータ抽出 → Excel集計 → PowerPoint化 → 上長確認 → 修正 → 配信</td>
+          <td>定常</td>
+          <td>週1回</td>
+          <td>6h</td>
+          <td>自動化</td>
+        </tr>
+        <tr>
+          <td><strong>月次メディアレポート作成</strong></td>
+          <td>全メディアのデータ集約 → グラフ作成 → 考察記入 → 部長レビュー → 役員会資料化</td>
+          <td>定常</td>
+          <td>月1回</td>
+          <td>16h</td>
+          <td>自動化</td>
+        </tr>
+        <tr>
+          <td><strong>クリエイティブ制作依頼・進行管理</strong></td>
+          <td>制作会社への依頼書作成 → 素材受領 → 社内確認ルーティング → 修正依頼 → 最終承認</td>
+          <td>定常</td>
+          <td>月10〜15件</td>
+          <td>2h/件</td>
+          <td>効率化</td>
+        </tr>
+        <tr>
+          <td><strong>広告入稿作業</strong></td>
+          <td>入稿規定確認 → 素材リサイズ → 管理画面入稿 → プレビュー確認 → 承認</td>
+          <td>定常</td>
+          <td>月20〜30件</td>
+          <td>1h/件</td>
+          <td>効率化</td>
+        </tr>
+        <tr>
+          <td><strong>請求書処理・予算管理</strong></td>
+          <td>代理店/媒体社からの請求書照合 → 予算残確認 → 経理提出 → 差異報告</td>
+          <td>定常</td>
+          <td>月1回</td>
+          <td>8h</td>
+          <td>簡素化</td>
+        </tr>
+        <tr>
+          <td><strong>競合調査・トレンドリサーチ</strong></td>
+          <td>競合の広告出稿状況をスクリーンショット収集 → Excel管理 → 月次レポート化</td>
+          <td>定常</td>
+          <td>週1回</td>
+          <td>3h</td>
+          <td>自動化</td>
+        </tr>
+        <tr>
+          <td><strong>キャンペーン企画立案</strong></td>
+          <td>市場データ分析 → 企画書作成 → 社内稟議 → 代理店ブリーフィング</td>
+          <td>例外</td>
+          <td>四半期3〜4件</td>
+          <td>20h/件</td>
+          <td>高度化</td>
+        </tr>
+        <tr>
+          <td><strong>SNS運用（投稿・返信・監視）</strong></td>
+          <td>投稿カレンダー作成 → 素材準備 → 投稿 → コメント対応 → 週次振り返り</td>
+          <td>定常</td>
+          <td>日次</td>
+          <td>1.5h/日</td>
+          <td>効率化</td>
+        </tr>
+        <tr>
+          <td><strong>テレビCM進行管理</strong></td>
+          <td>制作会社調整 → オンライン編集立ち会い → 考査提出 → 放映スケジュール管理</td>
+          <td>例外</td>
+          <td>年2〜3回</td>
+          <td>40h/回</td>
+          <td>簡素化</td>
+        </tr>
+        <tr>
+          <td><strong>展示会・イベント運営</strong></td>
+          <td>出展計画 → ブース設計 → 備品手配 → 当日運営 → 事後アンケート集計</td>
+          <td>例外</td>
+          <td>年2回</td>
+          <td>80h/回</td>
+          <td>効率化</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="highlight">
+    <strong>最大ボトルネック:</strong> 週次広告レポート作成（年間約312h消費、うち手動データ抽出が全体の60%）。月次メディアレポートもデータ集約に8h/回を費やしており、クリエイティブ進行管理では社内確認リレーで平均3営業日の滞留が発生しています。
+  </div>
+
+  <div class="note-box">
+    <strong>不確実性の注記:</strong> テレビCM進行管理の工数（40h/回）は年2〜3回の実施のため推定精度が低い値です。SNS運用の1.5h/日は自己申告ベースであり、実測値ではありません。
+  </div>
+</div>
+
+<!-- ===== セクション2: Before / After ===== -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">02</span>
+    <h2>Before / After — 週次広告レポート作成</h2>
+  </div>
+
+  <div class="ba-columns">
+    <!-- Before -->
+    <div class="ba-col">
+      <div class="ba-col-header ba-before-header">BEFORE（現状）</div>
+      <div class="ba-steps">
+        <div class="ba-step">
+          <div class="ba-step-title">Step 1. Google Ads データ出力</div>
+          <div class="ba-step-detail">管理画面にログイン → CSVを手動出力</div>
+          <div class="ba-step-body"><span class="ba-step-saving">20 min</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 2. Meta広告 データ出力</div>
+          <div class="ba-step-detail">広告マネージャにログイン → CSV出力</div>
+          <div class="ba-step-body"><span class="ba-step-saving">15 min</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 3. LINE広告 データ出力</div>
+          <div class="ba-step-detail">管理画面 → CSV出力</div>
+          <div class="ba-step-body"><span class="ba-step-saving">10 min</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step bottleneck">
+          <div class="ba-step-title">Step 4. GA4 レポート出力</div>
+          <div class="ba-step-detail">カスタムレポートを出力。4つの管理画面を往復する非効率が発生</div>
+          <div class="ba-step-body"><span class="ba-step-saving">15 min</span> <span class="bn-label">ボトルネック</span></div>
+          <span class="ba-badge badge-warn">ボトルネック</span>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step bottleneck">
+          <div class="ba-step-title">Step 5. Excel で CSV統合・集計</div>
+          <div class="ba-step-detail">4つのCSVを手作業で統合・集計</div>
+          <div class="ba-step-body"><span class="ba-step-saving">90 min</span> <span class="bn-label">ボトルネック</span></div>
+          <span class="ba-badge badge-warn">ボトルネック</span>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 6. PowerPoint に転記・体裁調整</div>
+          <div class="ba-step-detail">グラフ・表を貼り付けて体裁を調整</div>
+          <div class="ba-step-body"><span class="ba-step-saving">60 min</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 7. 上長確認・フィードバック待ち</div>
+          <div class="ba-step-detail">メール送付 → フィードバック待ち</div>
+          <div class="ba-step-body"><span class="ba-step-saving">平均 4h 待ち</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 8. 修正・配信</div>
+          <div class="ba-step-detail">修正反映 → 全社メーリングリストに配信</div>
+          <div class="ba-step-body"><span class="ba-step-saving">30 min</span></div>
+        </div>
+      </div>
+      <div class="ba-col-summary ba-before-summary">合計: 約 6 時間（待ち時間含む）</div>
+      <div class="ba-legend">
+        <span class="legend-dot bottleneck-dot"></span> ボトルネック工程
+      </div>
+    </div>
+
+    <!-- 中央矢印 -->
+    <div class="ba-center-arrow">
+      →
+      <span class="ba-center-label">改善</span>
+    </div>
+
+    <!-- After -->
+    <div class="ba-col">
+      <div class="ba-col-header ba-after-header">AFTER（提案後）</div>
+      <div class="ba-steps">
+        <div class="ba-step automated">
+          <div class="ba-step-title">Step 1. データ自動取得</div>
+          <div class="ba-step-detail">Looker Studio が GA4・Google Ads・Meta広告からデータを自動取得</div>
+          <div class="ba-step-body"><span class="ba-step-saving">0 min（自動）</span></div>
+          <span class="ba-badge badge-tool">Looker Studio</span>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step automated">
+          <div class="ba-step-title">Step 2. ダッシュボード確認</div>
+          <div class="ba-step-detail">最新数値をダッシュボード上で確認</div>
+          <div class="ba-step-body"><span class="ba-step-saving">10 min</span></div>
+          <span class="ba-badge badge-tool">Looker Studio</span>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 3. 考察コメント追記</div>
+          <div class="ba-step-detail">気づき・考察をコメントとして追記</div>
+          <div class="ba-step-body"><span class="ba-step-saving">20 min</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 4. URL共有・上長オンライン確認</div>
+          <div class="ba-step-detail">ダッシュボードURLを共有。上長がオンラインで確認・コメント</div>
+          <div class="ba-step-body"><span class="ba-step-saving">30 min</span></div>
+        </div>
+        <div class="ba-step-arrow">↓</div>
+        <div class="ba-step">
+          <div class="ba-step-title">Step 5. 追記・共有完了</div>
+          <div class="ba-step-detail">必要に応じてコメント追記 → 共有完了</div>
+          <div class="ba-step-body"><span class="ba-step-saving">10 min</span></div>
+        </div>
+      </div>
+      <div class="ba-col-summary ba-after-summary">合計: 約 1 時間 10 分</div>
+      <div class="ba-legend">
+        <span class="legend-dot automated-dot"></span> 自動化された工程
+        &nbsp;&nbsp;
+        <span class="legend-dot unchanged-dot"></span> 手動工程
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>削減効果:</strong> 週次レポート作成が 6h → 約1h に短縮。年間換算で <strong>約260h の削減</strong>（52週 × 5h）。手動データ抽出・Excel統合・PowerPoint転記の3工程が完全に不要になります。
+  </div>
+</div>
+
+<!-- ===== セクション3: レポート自動化の詳細 ===== -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">03</span>
+    <h2>レポート自動化の詳細 — Looker Studio 導入提案</h2>
+  </div>
+
+  <div class="card">
+    <h3 class="sub-h" style="margin-top: 0;">提案概要</h3>
+    <p>週次・月次レポートのデータ集約からグラフ化までを <strong>Looker Studio</strong> で自動化します。Google Ads、GA4、Meta広告をAPI連携でLooker Studioに統合し、手動でのCSV出力・Excel集計・PowerPoint転記を不要にします。</p>
+
+    <h3 class="sub-h">対象業務と削減効果</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+      <div style="background: rgba(224, 122, 95, 0.06); padding: 18px; border-left: 4px solid var(--peach);">
+        <div style="font-size: 0.82em; color: var(--charcoal-soft);">週次広告レポート</div>
+        <div style="font-family: 'Noto Serif JP', serif; font-size: 1.4em; font-weight: 900;">6h → 1h</div>
+        <div style="font-size: 0.82em; color: var(--peach-deep); font-weight: 700;">週あたり 5h 削減</div>
+      </div>
+      <div style="background: rgba(107, 143, 113, 0.06); padding: 18px; border-left: 4px solid var(--sage);">
+        <div style="font-size: 0.82em; color: var(--charcoal-soft);">月次メディアレポート</div>
+        <div style="font-family: 'Noto Serif JP', serif; font-size: 1.4em; font-weight: 900;">16h → 4h</div>
+        <div style="font-size: 0.82em; color: var(--sage-deep); font-weight: 700;">月あたり 12h 削減</div>
+      </div>
+    </div>
+
+    <h3 class="sub-h">導入のポイント</h3>
+    <ul style="padding-left: 20px; font-size: 0.92em; line-height: 2;">
+      <li>Google Ads と GA4 は標準コネクタで接続可能（設定のみ、コード不要）</li>
+      <li>Meta広告は Supermetrics 等のコネクタ、または手動CSV → Googleスプレッドシート経由で連携</li>
+      <li>LINE広告はAPI非公開のため、CSV → Googleスプレッドシート → Looker Studio で連携</li>
+      <li>既存のExcelレポートのグラフ・表構成をLooker Studio上で再現</li>
+    </ul>
+
+    <h3 class="sub-h">コスト</h3>
+    <div class="highlight">
+      <strong>追加コスト: 0円</strong>（Looker Studioは無料枠で利用可能）<br>
+      <span class="small">Googleアカウントがあれば即日開始できます。</span>
+    </div>
+
+    <h3 class="sub-h">参照リンク</h3>
+    <ul style="padding-left: 20px; font-size: 0.88em; line-height: 2.2;">
+      <li><a href="https://support.google.com/looker-studio/answer/6283323" target="_blank" rel="noopener" style="color: var(--peach-deep);">Looker Studio 公式ガイド（Google サポート）</a></li>
+      <li><a href="https://www.and-and.co.jp/blog/looker-studio-ads/" target="_blank" rel="noopener" style="color: var(--peach-deep);">広告レポート活用事例（and and）</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== セクション4: その他の改善提案 ===== -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">04</span>
+    <h2>その他の改善提案</h2>
+  </div>
+
+  <div class="proposal-card">
+    <h3>提案2: Backlog によるクリエイティブ進行管理の仕組み化</h3>
+    <p style="font-size: 0.9em; margin-bottom: 16px;">メール + Excelでの進行管理を Backlog のチケット管理に移行。承認フローをカンバンで可視化し、滞留アラートを設定することで、確認リレーの滞留を <strong>3日 → 1日</strong> に短縮します。</p>
+    <div class="detail-row">
+      <span class="detail-label">対象業務</span>
+      <span class="detail-value">クリエイティブ制作依頼・進行管理</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">現状の課題</span>
+      <span class="detail-value">社内確認リレーで平均3営業日滞留</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">期待効果</span>
+      <span class="detail-value">滞留日数 3日 → 1日</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">追加コスト</span>
+      <span class="detail-value">月額 12,980円（スタンダードプラン）</span>
+    </div>
+    <div class="link-list">
+      <a href="https://backlog.com/ja/" target="_blank" rel="noopener">Backlog 公式サイト →</a>
+    </div>
+  </div>
+
+  <div class="proposal-card">
+    <h3>提案3: SimilarWeb Free + RSS による競合調査の効率化</h3>
+    <p style="font-size: 0.9em; margin-bottom: 16px;">手動でのスクリーンショット収集を SimilarWeb の競合分析 + Google Alerts に置き換え。情報収集の自動化により、週次の作業時間を大幅に削減します。</p>
+    <div class="detail-row">
+      <span class="detail-label">対象業務</span>
+      <span class="detail-value">競合調査・トレンドリサーチ</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">現状の工数</span>
+      <span class="detail-value">週3h（手動スクリーンショット収集）</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">期待効果</span>
+      <span class="detail-value">週3h → 0.5h</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">追加コスト</span>
+      <span class="detail-value">0円（無料プラン）</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== セクション5: まとめ ===== -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">05</span>
+    <h2>まとめ</h2>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="value">7件</div>
+      <div class="label">改善対象業務数</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value">約42h</div>
+      <div class="label">月間削減時間</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value">¥12,980</div>
+      <div class="label">月額追加コスト</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value">約8倍</div>
+      <div class="label">投資対効果（ROI）</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>ROI算出根拠:</strong> 月間削減時間 約42h × 時給換算 2,500円 = 月 105,000円相当の工数削減。追加コスト月額 12,980円に対し、<strong>投資対効果は約8倍</strong>。年間では約504hの削減に相当します。
+  </div>
+
+  <div class="note-box">
+    <strong>不確実性について:</strong>
+    <ul style="padding-left: 18px; margin-top: 8px;">
+      <li>テレビCM進行管理の工数（40h/回）は年2〜3回の実施のため推定精度が低い値です。</li>
+      <li>SNS運用の1.5h/日は自己申告ベースであり、実測による検証が必要です。</li>
+      <li>上記KPI数値はこれらの不確実性を含んだ推定値です。</li>
+    </ul>
+  </div>
+
+  <div class="next-action">
+    <h3>今週やること</h3>
+    <ol>
+      <li><strong>Looker Studio にログイン</strong> — Googleアカウントでログインし、GA4とGoogle Adsのコネクタを接続する（所要 30分）</li>
+      <li><strong>週次レポートの再現テスト</strong> — 直近の週次レポートのExcelを1つ用意し、Looker Studioで同じグラフを再現できるか試す（所要 1時間）</li>
+      <li><strong>Backlog 無料トライアル開始</strong> — チーム全員で登録し、進行中のクリエイティブ案件を1件だけチケット化してみる（所要 30分）</li>
+    </ol>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  GENERATED BY CLAUDE CODE — 業務改善レポート — 2026-03-22
+</div>
+
+</body>
+</html>
