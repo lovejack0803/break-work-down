@@ -51,6 +51,11 @@ Claude Code で以下を実行してください:
 
 Slack / Google Workspace / Notion / GitHub / Discord / Telegram など、MCP 接続済みのツールに対応します。Chrome・Edge のブラウザ履歴も収集可能です。MCP 非対応の Web アプリについては、Browser Use CLI 2.0 経由で画面情報を取得できます。
 
+## 出力例
+
+- [広告宣伝部 — 業務改善レポート](https://lovejack0803.github.io/break-work-down/report_ad_2026-03-22.html)
+- [経理部 — 業務改善レポート](https://lovejack0803.github.io/break-work-down/report_acc_2026-03-22.html)
+
 ## ライセンス
 
 MIT
