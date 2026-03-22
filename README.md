@@ -12,7 +12,7 @@
 
 ## デモ
 
-<a href="https://youtu.be/rqW62Wd_lrA" target="_blank"><img src="https://img.shields.io/badge/Demo-YouTube-red" alt="デモ動画"></a>
+[![デモ動画](https://img.shields.io/badge/Demo-YouTube-red)](https://youtu.be/rqW62Wd_lrA)
 
 ## インストール
 
